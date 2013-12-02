@@ -12,9 +12,16 @@ class Board
 
   def [](pos)
     x,y = pos
-    raise "invalid index" unless x.between?(0,7) && y.between(0,7)
+    raise "invalid index" unless x.between?(0,7) && y.between?(0,7)
 
     @grid[y][x]
+  end
+
+  def []=(pos,value)
+    x,y = pos
+    raise "invalid index" unless x.between?(0,7) && y.between?(0,7)
+
+    @grid[y][x] = value
   end
 
   def render
@@ -28,8 +35,9 @@ class Board
           print "b"
         end
       end
-      puts ""
+      puts
     end
+    puts
   end
 
   def add_piece(x, y, color)
@@ -39,6 +47,8 @@ class Board
 end
 
 b= Board.new
+b.add_piece(3,5,:white)
+b.add_piece(2,4,:black)
 b.render
-b.add_piece(3,3,:white)
+p b[[3,5]].perform_jump(1,3)
 b.render
