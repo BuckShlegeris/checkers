@@ -1,5 +1,6 @@
 require "./Board.rb"
 require "./Human_Player.rb"
+require 'socket'
 
 $hostname = '10.0.1.154' #'199.241.200.213'
 $port = 8081

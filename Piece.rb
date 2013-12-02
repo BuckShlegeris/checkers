@@ -1,3 +1,5 @@
+# encoding : utf-8
+
 class Piece
   attr_accessor :pos, :color
 
