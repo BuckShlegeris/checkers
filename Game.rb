@@ -15,6 +15,7 @@ class Game
     puts "lol"
 
     until board.done?
+      system "clear"
       board.render
 
       if (mode == :server) == (color == :white)
