@@ -1,16 +1,29 @@
 require "./Board.rb"
 require "./Human_Player.rb"
 
+$hostname = '10.0.1.154' #'199.241.200.213'
+$port = 8081
+
 class Game
-  def play(player1, player2)
+  def play(mode)
     board = Board.new
-    player = player1
     color = :white
+
+    socket = get_socket(mode)
+
+    puts "lol"
 
     until board.done?
       board.render
 
-      start, sequence = player.get_move
+      if (mode == :server) == (color == :white)
+        data = STDIN.gets.chomp
+        socket.puts(data)
+      else
+        data = socket.gets
+      end
+
+      start, sequence = eval(data)
 
       starting_piece = board[start]
       if starting_piece || starting_piece.color = color
@@ -19,14 +32,26 @@ class Game
 
       if color == :white
         color = :black
-        player = player2
       else
         color = :white
-        player = player1
       end
     end
+  end
+
+  def get_socket(mode)
+    if mode == :server
+      server = TCPServer.open($port)
+      socket = server.accept
+    else
+      begin
+        socket = TCPSocket.open($hostname, $port)
+      rescue => error
+        retry
+      end
+    end
+    socket
   end
 end
 
 g = Game.new
-g.play(HumanPlayer.new, HumanPlayer.new)
+g.play(ARGV[0].to_sym)

@@ -96,7 +96,7 @@ class Board
 
   def done?
     pieces = @grid.flatten.map { |x| x.nil? ? [] : x.color }.flatten
-    not (pieces.include?(:white) && pieces.include?(:black))
+    ! (pieces.include?(:white) || pieces.include?(:black))
   end
 
 end
