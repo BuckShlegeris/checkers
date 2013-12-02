@@ -5,9 +5,9 @@ class Piece
     @pos, @color = pos, color
 
     if color == :white
-      @dy = -1
-    else
       @dy = 1
+    else
+      @dy = -1
     end
 
     @promoted = false
@@ -16,6 +16,14 @@ class Piece
 
   def promoted?
     @promoted
+  end
+
+  def to_s
+    if promoted?
+      return "☗ "
+    else
+      return "☻ "
+    end
   end
 
   def perform_slide(new_pos)

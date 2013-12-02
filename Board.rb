@@ -1,3 +1,5 @@
+# encoding : utf-8
+
 require_relative "Piece.rb"
 require "colorize"
 
@@ -6,8 +8,23 @@ class Board
 
   def initialize(fill_board = true)
     if fill_board
-      @grid = Array.new(8) { Array.new(8, nil) }
-      # TODO: this needs to actually put pieces down
+      populate_board
+    end
+  end
+
+  def populate_board
+    @grid = Array.new(8) { Array.new(8, nil) }
+
+    [1,3,5,7].each do |x|
+      [0,2].each do |y|
+        @grid[y][x] = Piece.new([x,y], :white, self)
+        @grid[7-y][7-x] = Piece.new([7-x,7-y], :black, self)
+      end
+    end
+
+    [0,2,4,6].each do |x|
+      @grid[1][x] = Piece.new([x,1], :white, self)
+      @grid[6][7-x] = Piece.new([7-x,6], :black, self)
     end
   end
 
@@ -26,15 +43,27 @@ class Board
   end
 
   def render
-    @grid.each do |row|
-      row.each do |item|
+    puts "  0 1 2 3 4 5 6 7"
+    @grid.each_with_index do |row, y|
+      print y
+      row.each_with_index do |item, x|
+        this_char = item.to_s
         if item.nil?
-          print "."
+          this_char = "  "
         elsif item.color == :white
-          print "w"
+          this_char = this_char.white
         else
-          print "b"
+          this_char = this_char.black
         end
+
+        if (x + y) % 2 == 0
+          this_char = this_char.on_green
+        else
+          this_char = this_char.on_red
+        end
+
+        print this_char
+
       end
       puts
     end
@@ -65,11 +94,9 @@ class Board
     out
   end
 
-end
+  def done?
+    pieces = @grid.flatten.map { |x| x.nil? ? [] : x.color }.flatten
+    not (pieces.include?(:white) && pieces.include?(:black))
+  end
 
-b= Board.new
-b.add_piece([3,5],:white)
-b.add_piece([2,4],:black)
-b.render
-b[[3,5]].perform_moves([[1,3]])
-b.render
+end
