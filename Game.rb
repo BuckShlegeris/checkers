@@ -2,7 +2,7 @@ require "./Board.rb"
 require "./Human_Player.rb"
 require 'socket'
 
-$hostname = '10.0.1.154' #'199.241.200.213'
+$hostname = 'localhost' #'199.241.200.213'
 $port = 8081
 
 class Game
@@ -16,10 +16,21 @@ class Game
 
     until board.done?
       system "clear"
+      p mode
       board.render
 
       if (mode == :server) == (color == :white)
-        data = STDIN.gets.chomp
+        sequence = []
+        begin
+          puts "Your go!"
+          puts "Enter a move sequence like this: [[1,3],[[2,4]]]"
+          puts "Note that coordinates require the column's index before the row's"
+          data = STDIN.gets.chomp
+          start, sequence = eval(data)
+          starting_piece = board[start]
+          p starting_piece
+        end until starting_piece.valid_move_seq?(sequence)
+
         socket.puts(data)
       else
         data = socket.gets
